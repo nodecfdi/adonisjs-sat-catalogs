@@ -38,13 +38,13 @@
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
     "@japa/assert": "^4.0.1",
+    "@japa/file-system": "^2.3.2",
     "@japa/runner": "^4.2.0",
     "@nodecfdi/eslint-config": "^3.0.0",
     "@nodecfdi/prettier-config": "^1.4.1",
     "@nodecfdi/tsconfig": "^1.7.4",
-    "@swc/core": "^1.11.1",
+    "@swc/core": "^1.11.4",
     "@types/better-sqlite3": "^7.6.12",
-    "@types/luxon": "^3.4.2",
     "@types/node": "^22.13.5",
     "auto-changelog": "^2.5.0",
     "better-sqlite3": "^11.8.1",
@@ -54,7 +54,6 @@
     "eslint": "^9.21.0",
     "husky": "^9.1.7",
     "is-in-ci": "^1.0.0",
-    "luxon": "^3.5.0",
     "np": "^10.2.0",
     "prettier": "^3.5.2",
     "ts-node-maintained": "^10.9.5",
@@ -63,14 +62,7 @@
   },
   "peerDependencies": {
     "@adonisjs/core": "^6.17.2",
-    "@adonisjs/lucid": "^21.6.0",
-    "@types/luxon": "^3.4.2",
-    "luxon": "^3.5.0"
-  },
-  "peerDependenciesMeta": {
-    "@types/luxon": {
-      "optional": true
-    }
+    "@adonisjs/lucid": "^21.6.0"
   },
   "author": "Fernando Isidro <luffynando@gmail.com>",
   "license": "MIT",
@@ -103,11 +95,16 @@
     ]
   },
   "c8": {
+    "all": true,
     "reporter": [
       "text",
       "lcov"
     ],
+    "include": [
+      "src/**"
+    ],
     "exclude": [
+      "bin/**",
       "tests/**"
     ]
   },
