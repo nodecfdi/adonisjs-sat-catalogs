@@ -1,2 +1,2 @@
-  @column()
+  @column({{ additionalProperties }})
   declare public {{ name }}: {{ type }};

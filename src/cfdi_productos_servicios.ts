@@ -3,17 +3,17 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class CfdiProductosServicios extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
-  @column()
+  @column({ isPrimary: true })
   declare public id: string;
 
   @column()
   declare public texto: string;
 
   @column()
-  declare public ivaTrasladado: number;
+  declare public ivaTrasladado: number | '';
 
   @column()
-  declare public iepsTrasladado: number;
+  declare public iepsTrasladado: number | '';
 
   @column()
   declare public complemento: string;
@@ -25,7 +25,7 @@ export default class CfdiProductosServicios extends BaseModel {
   declare public vigenciaHasta: string;
 
   @column()
-  declare public estimuloFrontera: number;
+  declare public estimuloFrontera: number | '';
 
   @column()
   declare public similares: string;

@@ -3,7 +3,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class Cfdi40Estados extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
-  @column()
+  @column({ isPrimary: true })
   declare public estado: string;
 
   @column()

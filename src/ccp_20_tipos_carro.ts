@@ -3,7 +3,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class Ccp20TiposCarro extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
-  @column()
+  @column({ isPrimary: true })
   declare public id: string;
 
   @column()

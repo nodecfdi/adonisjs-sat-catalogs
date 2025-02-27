@@ -3,7 +3,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class Cfdi40Impuestos extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
-  @column()
+  @column({ isPrimary: true })
   declare public id: string;
 
   @column()
@@ -13,7 +13,7 @@ export default class Cfdi40Impuestos extends BaseModel {
   declare public retencion: number;
 
   @column()
-  declare public traslado: number;
+  declare public traslado: number | '';
 
   @column()
   declare public ambito: string;

@@ -96,6 +96,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
         name: string;
         type: string;
         notnull: 0 | 1;
+        pk: 0 | 1;
       }[];
 
       const propertiesColumns: string[] = [];
@@ -103,18 +104,30 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
         const columnName = column.name;
         const columnType = column.type;
         const isNullable = column.notnull === 0;
+        const isPrimary = column.pk === 1;
         if (columnType === 'TEXT') {
           propertiesColumns.push(
             string.interpolate(propertyColumn, {
               name: string.camelCase(columnName),
               type: isNullable ? 'string | null' : 'string',
+              additionalProperties: isPrimary ? '{ isPrimary: true }' : '',
             }),
           );
         } else if (columnType === 'INT') {
+          let typeColumn = 'number';
+          const result = db.prepare(`select distinct ${columnName} from ${tableName}`).all() as Record<
+            string,
+            string | number
+          >[];
+          if (result.some((r) => typeof r[columnName] !== 'number')) {
+            typeColumn = `${typeColumn} | ''`;
+          }
+
           propertiesColumns.push(
             string.interpolate(propertyColumn, {
               name: string.camelCase(columnName),
-              type: isNullable ? 'number | null' : 'number',
+              type: isNullable ? `${typeColumn} | null` : typeColumn,
+              additionalProperties: isPrimary ? '{ isPrimary: true }' : '',
             }),
           );
         } else {

@@ -19,10 +19,10 @@ export default class Cfdi40ReglasTasaCuota extends BaseModel {
   declare public factor: string;
 
   @column()
-  declare public traslado: number;
+  declare public traslado: number | '';
 
   @column()
-  declare public retencion: number;
+  declare public retencion: number | '';
 
   @column()
   declare public vigenciaDesde: string;
