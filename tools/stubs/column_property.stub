@@ -1,0 +1,2 @@
+  @column()
+  declare public {{ name }}: {{ type }};

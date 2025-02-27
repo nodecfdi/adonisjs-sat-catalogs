@@ -1,10 +1,13 @@
 import { Buffer } from 'node:buffer';
 import { exec } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { BaseCommand } from '@adonisjs/ace';
 import { getDirname } from '@adonisjs/core/helpers';
+import string from '@adonisjs/core/helpers/string';
+// eslint-disable-next-line import-x/no-named-as-default
+import Database from 'better-sqlite3';
 import { deleteAsync } from 'del';
 
 const execAsync = promisify(exec);
@@ -15,7 +18,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
   public static readonly description = 'Download and make models of sat catalogs';
 
   public async run(): Promise<void> {
-    const { tmpPath, modelsPath, clean } = this.getPathsAndCleanFn();
+    const { tmpPath, modelsPath, stubsPath, clean } = this.getPathsAndCleanFn();
     await clean(tmpPath);
     await clean(modelsPath);
     this.logger.info('Creating tmp directory');
@@ -49,6 +52,84 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
 
       return;
     }
+
+    // Start process populating
+    const actionPopulate = this.logger.action('Generate models from catalogs.db');
+    try {
+      await this.generateModelsFromCatalogsDb(path.join(tmpPath, 'catalogs.db'), modelsPath, stubsPath);
+      actionPopulate.displayDuration().succeeded();
+    } catch (error) {
+      await clean(tmpPath);
+      actionPopulate.failed(error as Error);
+
+      return;
+    }
+
+    const applyPrettier = this.logger.action('Apply formatter using prettier');
+    await execAsync(`pnpm prettier --write ${modelsPath}`);
+    applyPrettier.displayDuration().succeeded();
+
+    await clean(tmpPath);
+  }
+
+  private async generateModelsFromCatalogsDb(
+    catalogDbPath: string,
+    modelsPath: string,
+    stubsPath: string,
+  ): Promise<void> {
+    const baseModel = await readFile(path.join(stubsPath, 'sat_catalog.stub'), 'utf8');
+    const propertyColumn = await readFile(path.join(stubsPath, 'column_property.stub'), 'utf8');
+
+    const db = new Database(catalogDbPath);
+    db.pragma('journal_mode = WAL');
+    const allTables = db
+      .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
+      .all() as { name: string }[];
+    this.logger.info(`Found ${allTables.length} tables`);
+    for (const table of allTables) {
+      const tableName = table.name;
+      this.logger.info(`Generating model for ${tableName}`);
+      const tableInfo = db.prepare(`PRAGMA table_info(${tableName})`).all() as {
+        name: string;
+        type: string;
+        notnull: 0 | 1;
+      }[];
+
+      const propertiesColumns: string[] = [];
+      for (const column of tableInfo) {
+        const columnName = column.name;
+        const columnType = column.type;
+        const isNullable = column.notnull === 0;
+        if (columnType === 'TEXT') {
+          propertiesColumns.push(
+            string.interpolate(propertyColumn, {
+              name: string.camelCase(columnName),
+              type: isNullable ? 'string | null' : 'string',
+            }),
+          );
+        } else if (columnType === 'INT') {
+          propertiesColumns.push(
+            string.interpolate(propertyColumn, {
+              name: string.camelCase(columnName),
+              type: isNullable ? 'number | null' : 'number',
+            }),
+          );
+        } else {
+          this.logger.error(`Column ${columnName} with type ${columnType} is not supported`);
+        }
+      }
+
+      const modelPath = path.join(modelsPath, `${string.snakeCase(tableName)}.ts`);
+      await writeFile(
+        modelPath,
+        string.interpolate(baseModel, {
+          name: string.pascalCase(tableName),
+          properties: propertiesColumns.length === 0 ? '' : propertiesColumns.join('\n'),
+        }),
+      );
+    }
+
+    db.close();
   }
 
   private async decompressFile(inputPath: string): Promise<void> {
@@ -61,16 +142,16 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
     await writeFile(outputPath, Buffer.from(rawBuffer));
   }
 
-  // eslint-disable-next-line @typescript-eslint/method-signature-style
-  private getPathsAndCleanFn(): { tmpPath: string; modelsPath: string; clean: (targetPath: string) => Promise<void> } {
+  private getPathsAndCleanFn() {
     const rootPath = path.join(getDirname(import.meta.url), '..', '..');
     const modelsPath = path.join(rootPath, 'src', 'models');
+    const stubsPath = path.join(rootPath, 'tools', 'stubs');
     const tmpPath = path.join(rootPath, 'tmp');
 
     const clean = async (targetPath: string) => {
       await deleteAsync(targetPath);
     };
 
-    return { tmpPath, modelsPath, clean };
+    return { tmpPath, modelsPath, clean, stubsPath };
   }
 }
