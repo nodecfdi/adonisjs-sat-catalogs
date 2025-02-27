@@ -11,13 +11,11 @@
     "!build/tests"
   ],
   "exports": {
-    ".": "./build/index.js",
-    "./types": "./build/src/types.js"
+    ".": "./build/index.js"
   },
   "scripts": {
     "prepare": "is-in-ci || husky",
     "clean": "del-cli build",
-    "copy:templates": "copyfiles \"stubs/**/*.stub\" build --up 1",
     "changelog": "auto-changelog -p && git add CHANGELOG.md",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --fix",
@@ -30,13 +28,11 @@
     "tool:build": "pnpm run tool:code && pnpm run test",
     "prebuild": "pnpm run tool:code && pnpm run clean",
     "build": "tsup-node --metafile && tsc --emitDeclarationOnly --declaration",
-    "postbuild": "pnpm run copy:templates",
     "release": "np",
     "version": "pnpm run build && pnpm run changelog"
   },
   "devDependencies": {
     "@adonisjs/ace": "^13.3.0",
-    "@adonisjs/assembler": "^7.8.2",
     "@adonisjs/core": "^6.17.2",
     "@adonisjs/lucid": "^21.6.0",
     "@commitlint/cli": "^19.7.1",
@@ -59,7 +55,6 @@
     "husky": "^9.1.7",
     "is-in-ci": "^1.0.0",
     "luxon": "^3.5.0",
-    "native-copyfiles": "^0.3.2",
     "np": "^10.2.0",
     "prettier": "^3.5.2",
     "ts-node-maintained": "^10.9.5",
@@ -139,8 +134,7 @@
   },
   "tsup": {
     "entry": [
-      "index.ts",
-      "src/types.ts"
+      "index.ts"
     ],
     "outDir": "./build",
     "clean": true,

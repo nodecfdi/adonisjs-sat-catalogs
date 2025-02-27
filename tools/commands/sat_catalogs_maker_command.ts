@@ -18,7 +18,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
   public static readonly description = 'Download and make models of sat catalogs';
 
   public async run(): Promise<void> {
-    const { tmpPath, modelsPath, stubsPath, clean } = this.getPathsAndCleanFn();
+    const { rootPath, tmpPath, modelsPath, stubsPath, clean } = this.getPathsAndCleanFn();
     await clean(tmpPath);
     await clean(modelsPath);
     this.logger.info('Creating tmp directory');
@@ -56,7 +56,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
     // Start process populating
     const actionPopulate = this.logger.action('Generate models from catalogs.db');
     try {
-      await this.generateModelsFromCatalogsDb(path.join(tmpPath, 'catalogs.db'), modelsPath, stubsPath);
+      await this.generateModelsFromCatalogsDb(path.join(tmpPath, 'catalogs.db'), modelsPath, stubsPath, rootPath);
       actionPopulate.displayDuration().succeeded();
     } catch (error) {
       await clean(tmpPath);
@@ -76,6 +76,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
     catalogDbPath: string,
     modelsPath: string,
     stubsPath: string,
+    rootPath: string,
   ): Promise<void> {
     const baseModel = await readFile(path.join(stubsPath, 'sat_catalog.stub'), 'utf8');
     const propertyColumn = await readFile(path.join(stubsPath, 'column_property.stub'), 'utf8');
@@ -86,6 +87,8 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
       .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
       .all() as { name: string }[];
     this.logger.info(`Found ${allTables.length} tables`);
+    const elementExport: { className: string; filePath: string }[] = [];
+
     for (const table of allTables) {
       const tableName = table.name;
       this.logger.info(`Generating model for ${tableName}`);
@@ -127,7 +130,18 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
           properties: propertiesColumns.length === 0 ? '' : propertiesColumns.join('\n'),
         }),
       );
+      elementExport.push({
+        className: string.pascalCase(tableName),
+        filePath: modelPath.replace(rootPath, '.').replace('.ts', '.js'),
+      });
     }
+
+    await writeFile(
+      path.join(rootPath, 'index.ts'),
+      `${elementExport
+        .map(({ className, filePath }) => `export { default as ${className} } from '${filePath}';`)
+        .join('\n')}\n`,
+    );
 
     db.close();
   }
@@ -144,7 +158,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
 
   private getPathsAndCleanFn() {
     const rootPath = path.join(getDirname(import.meta.url), '..', '..');
-    const modelsPath = path.join(rootPath, 'src', 'models');
+    const modelsPath = path.join(rootPath, 'src');
     const stubsPath = path.join(rootPath, 'tools', 'stubs');
     const tmpPath = path.join(rootPath, 'tmp');
 
@@ -152,6 +166,6 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
       await deleteAsync(targetPath);
     };
 
-    return { tmpPath, modelsPath, clean, stubsPath };
+    return { rootPath, tmpPath, modelsPath, stubsPath, clean };
   }
 }
