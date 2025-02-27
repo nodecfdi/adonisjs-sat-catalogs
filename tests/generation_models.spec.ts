@@ -36,6 +36,11 @@ test.group('Generation models', () => {
       const targetFile = path.join(getDirname(import.meta.url), '..', 'src', `${string.snakeCase(table.name)}.ts`);
       const module: { default: typeof BaseModel } = await import(targetFile);
       const Model = module.default;
+
+      assert.equal(Model.name, string.pascalCase(table.name));
+      assert.equal(Model.connection, 'satcatalogs');
+      assert.equal(Model.table, table.name);
+
       const columnsNamesInModel = Model.$columnsDefinitions
         .values()
         .map((c) => c.columnName)
@@ -51,7 +56,6 @@ test.group('Generation models', () => {
       assert.notEmpty(columnsNamesInModel);
       assert.notEmpty(columnsInTable);
       assert.equal(columnsNamesInModel.length, columnsInTable.length);
-
       assert.deepEqual(columnsInTable, columnsNamesInModel);
     }
   });

@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class CfdiClavesUnidades extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'cfdi_claves_unidades';
+
   @column({ isPrimary: true })
   declare public id: string;
 

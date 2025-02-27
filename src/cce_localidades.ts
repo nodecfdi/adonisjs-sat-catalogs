@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class CceLocalidades extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'cce_localidades';
+
   @column({ isPrimary: true })
   declare public localidad: string;
 

@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class CceUnidadesMedida extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'cce_unidades_medida';
+
   @column({ isPrimary: true })
   declare public id: string;
 

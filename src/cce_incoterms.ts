@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class CceIncoterms extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'cce_incoterms';
+
   @column({ isPrimary: true })
   declare public id: string;
 

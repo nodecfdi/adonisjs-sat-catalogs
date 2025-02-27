@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class Ccp31TiposCarga extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'ccp_31_tipos_carga';
+
   @column({ isPrimary: true })
   declare public id: string;
 

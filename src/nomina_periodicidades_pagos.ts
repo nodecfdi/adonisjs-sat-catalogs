@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class NominaPeriodicidadesPagos extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'nomina_periodicidades_pagos';
+
   @column({ isPrimary: true })
   declare public id: string;
 

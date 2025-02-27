@@ -140,6 +140,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
         modelPath,
         string.interpolate(baseModel, {
           name: string.pascalCase(tableName),
+          table: tableName,
           properties: propertiesColumns.length === 0 ? '' : propertiesColumns.join('\n'),
         }),
       );

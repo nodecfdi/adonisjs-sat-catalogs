@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class CfdiReglasTasaCuota extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'cfdi_reglas_tasa_cuota';
+
   @column()
   declare public tipo: string;
 

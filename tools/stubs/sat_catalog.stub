@@ -3,5 +3,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class {{ name }} extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = '{{ table }}';
+
   {{ properties }}
 }

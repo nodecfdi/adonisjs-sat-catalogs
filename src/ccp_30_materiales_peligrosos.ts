@@ -3,6 +3,8 @@ import { BaseModel, column } from '@adonisjs/lucid/orm';
 export default class Ccp30MaterialesPeligrosos extends BaseModel {
   public static readonly connection = 'satcatalogs';
 
+  public static readonly table = 'ccp_30_materiales_peligrosos';
+
   @column()
   declare public id: string;
 
