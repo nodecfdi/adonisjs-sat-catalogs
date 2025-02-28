@@ -6,8 +6,7 @@ import { promisify } from 'node:util';
 import { BaseCommand } from '@adonisjs/ace';
 import { getDirname } from '@adonisjs/core/helpers';
 import string from '@adonisjs/core/helpers/string';
-// eslint-disable-next-line import-x/no-named-as-default
-import Database from 'better-sqlite3';
+import DbSqlite3 from 'better-sqlite3';
 import { deleteAsync } from 'del';
 
 const execAsync = promisify(exec);
@@ -81,7 +80,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
     const baseModel = await readFile(path.join(stubsPath, 'sat_catalog.stub'), 'utf8');
     const propertyColumn = await readFile(path.join(stubsPath, 'column_property.stub'), 'utf8');
 
-    const db = new Database(catalogDbPath);
+    const db = new DbSqlite3(catalogDbPath);
     db.pragma('journal_mode = WAL');
     const allTables = db
       .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
