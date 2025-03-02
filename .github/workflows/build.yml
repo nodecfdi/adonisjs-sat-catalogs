@@ -14,4 +14,27 @@ jobs:
     uses: nodecfdi/.github/.github/workflows/quality_code.yml@main
 
   tests:
-    uses: nodecfdi/.github/.github/workflows/tests_lts.yml@main
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['22']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: latest
+          standalone: true
+          run_install: true
+
+      - name: Run tests
+        run: pnpm run test
+        env:
+          CI: true
