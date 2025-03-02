@@ -26,6 +26,7 @@
     "format:check": "prettier --check .",
     "test": "node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
     "test:coverage": "c8 pnpm run test",
+    "test:run": "pnpm run test",
     "tool:code": "pnpm run lint:check && pnpm run format:check && pnpm run typecheck",
     "tool:build": "pnpm run tool:code && pnpm run test",
     "prebuild": "pnpm run tool:code && pnpm run clean",
