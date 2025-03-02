@@ -6,7 +6,32 @@ on:
 
 jobs:
   tests-coverage:
-    uses: nodecfdi/.github/.github/workflows/test_coverage.yml@main
+    name: Build code coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: latest
+          standalone: true
+          run_install: true
+
+      - name: Create code coverage
+        run: pnpm run test:coverage
+        env:
+          CI: true
+
+      - name: Store code coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: coverage
 
   sonarcloud-secrets:
     name: SonarCloud check secrets are present
