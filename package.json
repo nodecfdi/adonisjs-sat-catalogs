@@ -124,7 +124,6 @@
   },
   "prettier": "@nodecfdi/prettier-config/pkg",
   "publishConfig": {
-    "provenance": true,
     "access": "public",
     "tag": "latest"
   },
