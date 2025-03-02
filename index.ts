@@ -1,3 +1,4 @@
+export { configure } from './configure.js';
 export { default as Cce20ClavesPedimentos } from './src/cce_20_claves_pedimentos.js';
 export { default as Cce20Colonias } from './src/cce_20_colonias.js';
 export { default as Cce20Estados } from './src/cce_20_estados.js';

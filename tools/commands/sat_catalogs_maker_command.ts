@@ -151,7 +151,7 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
 
     await writeFile(
       path.join(rootPath, 'index.ts'),
-      `${elementExport
+      `export { configure } from './configure.js';\n${elementExport
         .map(({ className, filePath }) => `export { default as ${className} } from '${filePath}';`)
         .join('\n')}\n`,
     );
