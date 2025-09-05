@@ -25,8 +25,11 @@
   ],
   "exports": {
     ".": "./dist/index.js",
-    "./commands": "./dist/commands/main.js"
+    "./commands": "./dist/commands/main.js",
+    "./commands/create_or_update_sat_catalogs_db": "./dist/commands/create_or_update_sat_catalogs_db.js",
+    "./package.json": "./package.json"
   },
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -41,7 +44,7 @@
     "build": "tsdown --clean --dts",
     "postbuild": "pnpm index:commands && pnpm gen:docs && git add docs/*",
     "gen:docs": "typedoc",
-    "index:commands": "adonis-kit index build/commands",
+    "index:commands": "adonis-kit index dist/commands",
     "changelog": "auto-changelog -p && git add CHANGELOG.md",
     "release": "np",
     "version": "pnpm build && pnpm changelog",
@@ -129,7 +132,10 @@
       "./commands/create_or_update_sat_catalogs_db.ts"
     ],
     "entryPointStrategy": "expand",
-    "out": "./docs"
+    "out": "./docs",
+    "externalSymbolLinkMappings": {
+      "@adonisjs/ace": { "CommandMetaData": "#" }
+    }
   },
   "auto-changelog": {
     "template": "keepachangelog",
@@ -156,7 +162,6 @@
     ],
     "target": "esnext",
     "platform": "node",
-    "exports": true,
     "unbundle": true
   }
 }
