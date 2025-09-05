@@ -51,8 +51,8 @@
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:run": "node --inspect --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
-    "test:coverage": "c8 pnpm test:run",
+    "test:run": "node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
+    "test:coverage": "c8 node --inspect --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
     "tool:code": "pnpm lint:check && pnpm typecheck",
     "tool:build": "pnpm tool:code && pnpm test:run"
   },
