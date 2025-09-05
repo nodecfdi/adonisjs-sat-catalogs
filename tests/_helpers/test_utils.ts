@@ -1,3 +1,4 @@
+import type { Database as BetterSQLiteDatabase } from 'better-sqlite3';
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { Emitter } from '@adonisjs/core/events';
@@ -7,7 +8,7 @@ import { getDirname } from '@adonisjs/core/helpers';
 import { Database } from '@adonisjs/lucid/database';
 import { BaseModel } from '@adonisjs/lucid/orm';
 import { getActiveTest } from '@japa/runner';
-import DatabaseSQ, { type Database as BetterSQLiteDatabase } from 'better-sqlite3';
+import DatabaseSQ from 'better-sqlite3';
 
 export const createConnection = async function (): Promise<Database> {
   const test = getActiveTest();
@@ -40,7 +41,7 @@ export const createConnection = async function (): Promise<Database> {
     emitter,
   );
 
-  test.cleanup(() => db.manager.closeAll());
+  test.cleanup(async () => db.manager.closeAll());
   BaseModel.useAdapter(db.modelAdapter());
 
   db.connection('satcatalogs').raw('PRAGMA journal_mode=DELETE');

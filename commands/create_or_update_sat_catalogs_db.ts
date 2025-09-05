@@ -1,8 +1,8 @@
+import type { CommandOptions } from '@adonisjs/core/types/ace';
 import { Buffer } from 'node:buffer';
 import { access, constants, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { BaseCommand, flags } from '@adonisjs/core/ace';
-import { type CommandOptions } from '@adonisjs/core/types/ace';
 import DbSqlite3 from 'better-sqlite3';
 import { deleteAsync } from 'del';
 import unzipper from 'unzipper';
@@ -10,11 +10,12 @@ import unzipper from 'unzipper';
 export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
   public static readonly commandName = 'sat-catalogs:create-update';
 
-  public static readonly description =
-    'Download sources from phpcfdi/resources-sat-catalogs and create or update a sqlite3 database';
+  public static readonly description
+    = 'Download sources from phpcfdi/resources-sat-catalogs and create or update a sqlite3 database';
 
   public static readonly help = [
-    'This command will download the sources from phpcfdi/resources-sat-catalogs and create or update a sqlite3 database',
+    'This command will download the sources from phpcfdi/resources-sat-catalogs',
+    'and create or update a sqlite3 database',
     '',
     'The database will be created in the config database connection satcatalogs filepath',
     'or in the destination directory if provided with the --destination flag.',
@@ -41,7 +42,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
   })
   declare public override?: boolean;
 
-  public prepare() {
+  public prepare(): void {
     this.app.terminating(async () => {
       const tmpPath = this.app.tmpPath('satcatalogs');
 
@@ -51,13 +52,13 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
     });
   }
 
-  public async run() {
-    let destinationDirOrFile =
-      this.destination ?? this.app.config.get<string>('database.connections.satcatalogs.connection.filename', './');
+  public async run(): Promise<void> {
+    let destinationDirOrFile
+      = this.destination ?? this.app.config.get<string>('database.connections.satcatalogs.connection.filename', './');
     if (
-      !destinationDirOrFile.endsWith('.db') &&
-      !destinationDirOrFile.endsWith('.sqlite') &&
-      !destinationDirOrFile.endsWith('.sqlite3')
+      !destinationDirOrFile.endsWith('.db')
+      && !destinationDirOrFile.endsWith('.sqlite')
+      && !destinationDirOrFile.endsWith('.sqlite3')
     ) {
       destinationDirOrFile = path.join(destinationDirOrFile, 'satcatalogs.db');
     }
@@ -83,7 +84,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
       const onlineVersionFileExists = await this.downloadFile(versionFile, versionFilePath);
       if (!onlineVersionFileExists) {
         versionAction.displayDuration().failed('Error downloading version file');
-        this.terminate();
+        await this.terminate();
 
         return;
       }
@@ -99,7 +100,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
         if (localVersion === onlineVersion) {
           this.logger.info('Database is up to date');
           this.logger.info('No need to update');
-          this.terminate();
+          await this.terminate();
 
           return;
         }
@@ -111,7 +112,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
       const zipFileExists = await this.downloadFile(resourceZip, zipFilePath);
       if (!zipFileExists) {
         zipActionDownload.displayDuration().failed('Error downloading phpcfdi/resources-sat-catalogs');
-        this.terminate();
+        await this.terminate();
 
         return;
       }
@@ -122,7 +123,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
       const zipFileDecompressExists = await this.decompressFile(zipFilePath, tmpPath);
       if (!zipFileDecompressExists) {
         zipDecompressAction.displayDuration().failed('Error decompressing phpcfdi/resources-sat-catalogs');
-        this.terminate();
+        await this.terminate();
 
         return;
       }
@@ -134,7 +135,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
       const result = await this.createOrUpdateDatabase(destinationDirOrFile, zipDecompressPath);
       if (!result) {
         createOrUpdateDatabaseAction.displayDuration().failed('Error creating or updating database');
-        this.terminate();
+        await this.terminate();
 
         return;
       }
@@ -151,7 +152,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
     }
   }
 
-  public async completed() {
+  public async completed(): Promise<boolean | undefined> {
     if (this.error) {
       this.logger.error((this.error as Error).message);
 

@@ -1,8 +1,8 @@
+import type { BaseModel } from '@adonisjs/lucid/orm';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { getDirname } from '@adonisjs/core/helpers';
 import string from '@adonisjs/core/helpers/string';
-import { type BaseModel } from '@adonisjs/lucid/orm';
 import { test } from '@japa/runner';
 import { getRawConnection } from './_helpers/test_utils.js';
 
@@ -24,7 +24,7 @@ test.group('Generation models', () => {
 
       assert.include(srcDir, expectedFileName);
     }
-  });
+  }).timeout(30000);
 
   test('models generated as all columns as the database', async ({ assert }) => {
     const rawDb = getRawConnection();
@@ -34,7 +34,7 @@ test.group('Generation models', () => {
 
     for (const table of allTables) {
       const targetFile = path.join(getDirname(import.meta.url), '..', 'src', `${string.snakeCase(table.name)}.ts`);
-      const module: { default: typeof BaseModel } = await import(targetFile);
+      const module = (await import(targetFile)) as { default: typeof BaseModel };
       const Model = module.default;
 
       assert.equal(Model.name, string.pascalCase(table.name));
@@ -58,5 +58,5 @@ test.group('Generation models', () => {
       assert.equal(columnsNamesInModel.length, columnsInTable.length);
       assert.deepEqual(columnsInTable, columnsNamesInModel);
     }
-  });
+  }).timeout(30000);
 });

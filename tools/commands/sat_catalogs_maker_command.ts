@@ -64,9 +64,9 @@ export default class SatCatalogsMakerCommand extends BaseCommand {
       return;
     }
 
-    const applyPrettier = this.logger.action('Apply formatter using prettier');
-    await execAsync(`pnpm prettier --write ${modelsPath}`);
-    applyPrettier.displayDuration().succeeded();
+    const applyEslint = this.logger.action('Apply formatter using eslint');
+    await execAsync(`pnpm eslint --fix ${modelsPath}`);
+    applyEslint.displayDuration().succeeded();
 
     await clean(tmpPath);
   }
