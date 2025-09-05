@@ -41,10 +41,12 @@ test.group('Generation models', () => {
       assert.equal(Model.connection, 'satcatalogs');
       assert.equal(Model.table, table.name);
 
-      const columnsNamesInModel = Model.$columnsDefinitions
-        .values()
-        .map((c) => c.columnName)
-        .toArray();
+      const modelColumnsDefinitions = Model.$columnsDefinitions.values();
+      const columnsNamesInModel = [] as string[];
+      for (const column of modelColumnsDefinitions) {
+        columnsNamesInModel.push(column.columnName);
+      }
+
       const columnsInfo = rawDb.prepare(`PRAGMA table_info(${table.name})`).all() as {
         name: string;
         type: string;
