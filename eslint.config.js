@@ -1,6 +1,18 @@
-// @ts-check
-import nodecfdiConfig from '@nodecfdi/eslint-config';
+import eienjs from '@eienjs/eslint-config';
 
-const { defineConfig } = nodecfdiConfig(import.meta.dirname, { adonisjs: true, sonarjs: true, n: true });
-
-export default defineConfig();
+export default eienjs({
+  ignores: ['docs'],
+  typescript: {
+    tsconfigPath: 'tsconfig.json',
+  },
+}).append({
+  files: ['ace.js', 'tools/main.ts'],
+  rules: {
+    'antfu/no-top-level-await': 'off',
+  },
+}, {
+  files: ['commands/**/*.ts'],
+  rules: {
+    '@typescript-eslint/require-await': 'off',
+  },
+});
