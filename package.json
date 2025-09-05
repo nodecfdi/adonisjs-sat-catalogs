@@ -1,78 +1,9 @@
 {
   "name": "@nodecfdi/adonisjs-sat-catalogs",
-  "description": "A simple wrapper from phpcfdi/resources-sat-catalogs for adonisjs",
-  "version": "1.0.0",
   "type": "module",
-  "module": "./build/index.js",
-  "types": "./build/index.d.ts",
-  "files": [
-    "build",
-    "!build/bin",
-    "!build/tests"
-  ],
-  "exports": {
-    ".": "./build/index.js",
-    "./commands": "./build/commands/main.js"
-  },
-  "scripts": {
-    "prepare": "is-in-ci || husky",
-    "clean": "del-cli build",
-    "changelog": "auto-changelog -p && git add CHANGELOG.md",
-    "index:commands": "adonis-kit index build/commands",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "test": "node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
-    "test:coverage": "c8 pnpm run test",
-    "tool:code": "pnpm run lint:check && pnpm run format:check && pnpm run typecheck",
-    "tool:build": "pnpm run tool:code && pnpm run test",
-    "prebuild": "pnpm run tool:code && pnpm run clean",
-    "build": "tsup-node --metafile && tsc --emitDeclarationOnly --declaration",
-    "postbuild": "pnpm run index:commands",
-    "release": "np",
-    "version": "pnpm run build && pnpm run changelog"
-  },
-  "devDependencies": {
-    "@adonisjs/ace": "^13.3.0",
-    "@adonisjs/assembler": "^7.8.2",
-    "@adonisjs/core": "^6.17.2",
-    "@adonisjs/lucid": "^21.6.0",
-    "@commitlint/cli": "^19.7.1",
-    "@commitlint/config-conventional": "^19.7.1",
-    "@japa/assert": "^4.0.1",
-    "@japa/file-system": "^2.3.2",
-    "@japa/runner": "^4.2.0",
-    "@nodecfdi/eslint-config": "^3.0.0",
-    "@nodecfdi/prettier-config": "^1.4.1",
-    "@nodecfdi/tsconfig": "^1.7.4",
-    "@swc/core": "^1.11.5",
-    "@types/better-sqlite3": "^7.6.12",
-    "@types/node": "^22.13.8",
-    "@types/unzipper": "^0.10.11",
-    "auto-changelog": "^2.5.0",
-    "better-sqlite3": "^11.8.1",
-    "c8": "^10.1.3",
-    "del": "^8.0.0",
-    "del-cli": "^6.0.0",
-    "eslint": "^9.21.0",
-    "husky": "^9.1.7",
-    "is-in-ci": "^1.0.0",
-    "luxon": "^3.5.0",
-    "np": "^10.2.0",
-    "prettier": "^3.5.2",
-    "ts-node-maintained": "^10.9.5",
-    "tsup": "^8.4.0",
-    "typescript": "~5.7.3"
-  },
-  "dependencies": {
-    "unzipper": "^0.12.3"
-  },
-  "peerDependencies": {
-    "@adonisjs/core": "^6.17.2",
-    "@adonisjs/lucid": "^21.6.0"
-  },
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.15.1",
+  "description": "A simple wrapper from phpcfdi/resources-sat-catalogs for adonisjs",
   "author": "Fernando Isidro <luffynando@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/nodecfdi/adonisjs-sat-catalogs",
@@ -92,10 +23,73 @@
     "resources",
     "wrapper"
   ],
-  "engines": {
-    "node": ">=20.6.0"
+  "exports": {
+    ".": "./dist/index.js",
+    "./commands": "./dist/commands/main.js"
   },
-  "packageManager": "pnpm@10.5.2",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "prepare": "is-in-ci || husky",
+    "prebuild": "pnpm tool:code",
+    "build": "tsdown --clean --dts",
+    "postbuild": "pnpm index:commands && pnpm gen:docs && git add docs/*",
+    "gen:docs": "typedoc",
+    "index:commands": "adonis-kit index build/commands",
+    "changelog": "auto-changelog -p && git add CHANGELOG.md",
+    "release": "np",
+    "version": "pnpm build && pnpm changelog",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test:run": "node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
+    "test:coverage": "c8 pnpm test",
+    "tool:code": "pnpm lint:check && pnpm typecheck",
+    "tool:build": "pnpm tool:code && pnpm test:run"
+  },
+  "peerDependencies": {
+    "@adonisjs/core": "^6.17.2",
+    "@adonisjs/lucid": "^21.6.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "del": "^8.0.0",
+    "unzipper": "^0.12.3"
+  },
+  "devDependencies": {
+    "@adonisjs/ace": "^13.3.0",
+    "@adonisjs/assembler": "^7.8.2",
+    "@adonisjs/core": "^6.17.2",
+    "@adonisjs/lucid": "^21.6.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eienjs/eslint-config": "^1.2.2",
+    "@japa/assert": "^4.1.1",
+    "@japa/file-system": "^2.3.2",
+    "@japa/runner": "^4.4.0",
+    "@swc/core": "^1.13.5",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.18.1",
+    "@types/unzipper": "^0.10.11",
+    "auto-changelog": "^2.5.0",
+    "c8": "^10.1.3",
+    "eslint": "^9.34.0",
+    "husky": "^9.1.7",
+    "is-in-ci": "^2.0.0",
+    "luxon": "^3.7.1",
+    "np": "^10.2.0",
+    "ts-node-maintained": "^10.9.6",
+    "tsdown": "^0.14.2",
+    "typedoc": "^0.28.12",
+    "typedoc-github-theme": "^0.3.1",
+    "typescript": "^5.9.2"
+  },
   "pnpm": {
     "onlyBuiltDependencies": [
       "@swc/core",
@@ -122,31 +116,47 @@
       "@commitlint/config-conventional"
     ]
   },
-  "prettier": "@nodecfdi/prettier-config/pkg",
   "publishConfig": {
     "access": "public",
     "tag": "latest"
   },
+  "typedocOptions": {
+    "plugin": [
+      "typedoc-github-theme"
+    ],
+    "entryPoints": [
+      "./index.ts",
+      "./commands/create_or_update_sat_catalogs_db.ts"
+    ],
+    "entryPointStrategy": "expand",
+    "out": "./docs"
+  },
   "auto-changelog": {
     "template": "keepachangelog",
-    "hideCredit": true
+    "hideCredit": true,
+    "commitUrl": "https://github.com/nodecfdi/adonisjs-sat-catalogs/commit/{id}",
+    "issueUrl": "https://github.com/nodecfdi/adonisjs-sat-catalogs/issues/{id}",
+    "mergeUrl": "https://github.com/nodecfdi/adonisjs-sat-catalogs/pull/{id}",
+    "compareUrl": "https://github.com/nodecfdi/adonisjs-sat-catalogs/compare/{from}...{to}"
   },
   "np": {
     "message": "chore(release): :tada: %s",
     "tag": "latest",
     "branch": "main",
-    "testScript": "test"
+    "testScript": "test:run"
   },
-  "tsup": {
+  "tsdown": {
     "entry": [
       "index.ts",
       "commands/create_or_update_sat_catalogs_db.ts"
     ],
-    "outDir": "./build",
-    "clean": true,
-    "format": "esm",
-    "dts": false,
-    "sourcemap": true,
-    "target": "esnext"
+    "shims": true,
+    "format": [
+      "esm"
+    ],
+    "target": "esnext",
+    "platform": "node",
+    "exports": true,
+    "unbundle": true
   }
 }
