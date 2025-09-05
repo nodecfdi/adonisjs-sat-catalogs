@@ -4,7 +4,6 @@ import path from 'node:path';
 import { getDirname } from '@adonisjs/core/helpers';
 import string from '@adonisjs/core/helpers/string';
 import { test } from '@japa/runner';
-import isInCi from 'is-in-ci';
 import { getRawConnection } from './_helpers/test_utils.js';
 
 test.group('Generation models', () => {
@@ -25,7 +24,7 @@ test.group('Generation models', () => {
 
       assert.include(srcDir, expectedFileName);
     }
-  }).timeout(30000);
+  }).timeout(60000);
 
   test('models generated as all columns as the database', async ({ assert }) => {
     const rawDb = getRawConnection();
@@ -59,5 +58,5 @@ test.group('Generation models', () => {
       assert.equal(columnsNamesInModel.length, columnsInTable.length);
       assert.deepEqual(columnsInTable, columnsNamesInModel);
     }
-  }).timeout(30000).skip(isInCi, 'Skipping in CI for speed and no sqlite connection');
+  }).timeout(60000);
 });

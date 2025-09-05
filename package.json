@@ -52,7 +52,7 @@
     "lint:check": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:run": "node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
-    "test:coverage": "c8 pnpm test",
+    "test:coverage": "c8 pnpm test:run",
     "tool:code": "pnpm lint:check && pnpm typecheck",
     "tool:build": "pnpm tool:code && pnpm test:run"
   },
