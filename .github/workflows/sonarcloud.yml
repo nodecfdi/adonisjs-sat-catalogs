@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  ttests-coverage:
+  tests-coverage:
     uses: nodecfdi/.github/.github/workflows/test_coverage.yml@main
 
   sonarcloud-secrets:
