@@ -25,16 +25,16 @@
     "wrapper"
   ],
   "exports": {
-    ".": "./dist/index.js",
-    "./commands": "./dist/commands/main.js",
-    "./commands/create_or_update_sat_catalogs_db": "./dist/commands/create_or_update_sat_catalogs_db.js",
-    "./package.json": "./package.json"
+    ".": "./build/index.mjs",
+    "./commands/create_or_update_sat_catalogs_db": "./build/commands/create_or_update_sat_catalogs_db.mjs",
+    "./package.json": "./package.json",
+    "./commands": "./build/commands/main.js"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./build/index.mjs",
+  "module": "./build/index.mjs",
+  "types": "./build/index.d.mts",
   "files": [
-    "dist"
+    "build"
   ],
   "engines": {
     "node": ">=20.19"
@@ -45,7 +45,7 @@
     "build": "tsdown --clean --dts",
     "postbuild": "pnpm run index:commands && pnpm run gen:docs && git add docs/*",
     "gen:docs": "typedoc",
-    "index:commands": "adonis-kit index dist/commands",
+    "index:commands": "adonis-kit index build/commands",
     "changelog": "auto-changelog -p && git add CHANGELOG.md",
     "release": "np",
     "version": "pnpm run build && pnpm run changelog",
