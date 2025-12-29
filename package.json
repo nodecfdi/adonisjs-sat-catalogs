@@ -77,7 +77,7 @@
     "@eienjs/eslint-config": "^1.8.2",
     "@japa/assert": "^4.2.0",
     "@japa/file-system": "^3.0.0",
-    "@japa/runner": "^5.0.0",
+    "@japa/runner": "^4.4.0",
     "@swc/core": "^1.15.7",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.10.4",
