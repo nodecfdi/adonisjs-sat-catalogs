@@ -1,24 +1,7 @@
 {
+  "extends": "@adonisjs/tsconfig/tsconfig.package.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "experimentalDecorators": true,
-    "module": "NodeNext",
-    "strict": true,
-    "strictBindCallApply": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "removeComments": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "skipLibCheck": true
-  },
-  "include": ["**/*.ts"]
+    "rootDir": "./",
+    "outDir": "build"
+  }
 }

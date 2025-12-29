@@ -4,6 +4,7 @@ export default eienjs({
   ignores: ['docs'],
   typescript: {
     tsconfigPath: 'tsconfig.json',
+    erasableSyntaxOnly: true,
   },
 }).append({
   files: ['ace.js', 'tools/main.ts'],

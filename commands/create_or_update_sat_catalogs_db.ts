@@ -147,7 +147,7 @@ export default class CreateOrUpdateSatCatalogsDb extends BaseCommand {
       this.logger.success('Database is ready to use');
     } catch (error) {
       this.logger.error('Error executing command sat-catalogs:create-update');
-      this.error = error;
+      this.error = error as Error;
       this.exitCode = 1;
     }
   }
